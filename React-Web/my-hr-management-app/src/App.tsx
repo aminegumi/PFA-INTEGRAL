@@ -1,20 +1,28 @@
 import React from 'react';
-import Routes from './routes';
-import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { NextUIProvider } from '@nextui-org/react';
+import AppNavbar from './components/Navbar';
+import AppRoutes from './routes';
+import AnimatedBackground from './components/AnimatedBackground';
+import './assets/styles/index.css';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <Navbar />
-      <Sidebar />
-      <div className="content" style={{ marginLeft: '200px', padding: '1rem' }}>
-        <Routes />
-      </div>
-      <Footer />
-    </div>
+    <NextUIProvider>
+      <Router>
+        <div className="min-h-screen font-sans antialiased relative">
+          <AnimatedBackground />
+          <AppNavbar />
+          <main className="flex-grow flex items-center justify-center relative z-10">
+            <div className='container mx-auto px-4 py-8'>
+              <AppRoutes />
+            </div>
+          </main>
+        </div>
+      </Router>
+    </NextUIProvider>
   );
 };
+
 
 export default App;

@@ -1,57 +1,8 @@
-/* src/assets/styles/index.css */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
+/* Your custom styles can go here */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #333;
-    padding: 1rem;
-  }
-  
-  .navbar a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-  }
-  
-  .navbar a:hover {
-    background-color: #555;
-  }
-  
-  .footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: #333;
-    color: white;
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-  }
-  
-  .sidebar {
-    width: 200px;
-    height: 100vh;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .sidebar a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 0;
-  }
-  
-  .sidebar a:hover {
-    background-color: #555;
-  }
-  
+  font-family: Arial, sans-serif;
+}

@@ -1,17 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Home from './pages/Home';
-import Employees from './pages/Employees';
-import NotFound from './pages/NotFound';
+import {Route, Routes } from 'react-router-dom';
 
-const Routes: React.FC = () => (
-  <Router>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route path="/employees" component={Employees} />
-      <Route component={NotFound} />
-    </Switch>
-  </Router>
+// Placeholder components
+const PlaceholderComponent: React.FC<{ name: string }> = ({ name }) => (
+  <div>{name} pages where we will go after completing the code</div>
 );
 
-export default Routes;
+const AppRoutes: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<PlaceholderComponent name="Home" />} />
+      <Route path="/employees" element={<PlaceholderComponent name="Employees" />} />
+      <Route path="/departments" element={<PlaceholderComponent name="Departments" />} />
+      <Route path="/job-categories" element={<PlaceholderComponent name="Job Categories" />} />
+      <Route path="*" element={<PlaceholderComponent name="Not Found" />} />
+    </Routes>
+  );
+};
+
+export default AppRoutes;
