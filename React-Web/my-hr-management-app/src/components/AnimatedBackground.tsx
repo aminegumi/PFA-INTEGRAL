@@ -1,26 +1,27 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { Box, keyframes } from '@mui/material';
+import { styled } from '@mui/system';
+
+const backgroundAnimation = keyframes`
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+`;
+
+const AnimatedBackgroundBox = styled(Box)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -10;
+  background: linear-gradient(45deg, #BC9F8B, #B5CFB7, #CADABF, #E7E8D8, rgb(188, 159, 139), rgb(181, 207, 183), rgb(202, 218, 191), rgb(231, 232, 216));
+  background-size: 800% 800%;
+  animation: ${backgroundAnimation} 20s linear infinite;
+`;
 
 const AnimatedBackground: React.FC = () => {
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 bottom-0 -z-10"
-      initial={{ backgroundPosition: '0% 0%' }}
-      animate={{ 
-        backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-      }}
-      transition={{
-        repeat: Infinity,
-        repeatType: 'reverse',
-        duration: 20,
-        ease: 'linear',
-      }}
-      style={{
-        background: 'linear-gradient(45deg, #f3f4f6 25%, #e5e7eb 25%, #e5e7eb 50%, #f3f4f6 50%, #f3f4f6 75%, #e5e7eb 75%, #e5e7eb 100%)',
-        backgroundSize: '40px 40px',
-      }}
-    />
-  );
+  return <AnimatedBackgroundBox />;
 };
 
 export default AnimatedBackground;

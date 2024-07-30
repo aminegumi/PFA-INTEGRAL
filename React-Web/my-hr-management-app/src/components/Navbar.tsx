@@ -10,6 +10,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const theme = createTheme({
   palette: {
@@ -67,6 +68,7 @@ const menuItems = [
 export default function AppNavbar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentMenu, setCurrentMenu] = useState<string | null>(null);
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, menuName: string) => {
     setAnchorEl(event.currentTarget);
@@ -76,6 +78,14 @@ export default function AppNavbar() {
   const handleClose = () => {
     setAnchorEl(null);
     setCurrentMenu(null);
+  };
+
+  const handleUserMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setUserMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchorEl(null);
   };
 
   return (
@@ -141,6 +151,48 @@ export default function AppNavbar() {
                 </Menu>
               </React.Fragment>
             ))}
+            <IconButton
+              onClick={handleUserMenuClick}
+              size="large"
+              edge="end"
+              aria-label="user menu"
+              sx={{ color: 'black' }}
+            >
+              <AccountCircleIcon />
+            </IconButton>
+            <Menu
+              anchorEl={userMenuAnchorEl}
+              open={Boolean(userMenuAnchorEl)}
+              onClose={handleUserMenuClose}
+              PaperProps={{
+                sx: {
+                  backgroundColor: '#E7E8D8',
+                },
+              }}
+            >
+              <MenuItem 
+                onClick={handleUserMenuClose}
+                sx={{
+                  color: '#000',
+                  '&:hover': {
+                    backgroundColor: 'rgba(188, 159, 139, 0.1)',
+                  },
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem 
+                onClick={handleUserMenuClose}
+                sx={{
+                  color: '#000',
+                  '&:hover': {
+                    backgroundColor: 'rgba(188, 159, 139, 0.1)',
+                  },
+                }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
           </Toolbar>
         </AppBar>
       </Box>
