@@ -1,5 +1,6 @@
 import React from 'react';
-import {Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
 
 // Placeholder components
 const PlaceholderComponent: React.FC<{ name: string }> = ({ name }) => (
@@ -9,7 +10,7 @@ const PlaceholderComponent: React.FC<{ name: string }> = ({ name }) => (
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<PlaceholderComponent name="Home" />} />
+      <Route path="/" element={<Home />} />
       <Route path="/employees" element={<PlaceholderComponent name="Employees" />} />
       <Route path="/departments" element={<PlaceholderComponent name="Departments" />} />
       <Route path="/job-categories" element={<PlaceholderComponent name="Job Categories" />} />

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -9,25 +8,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#BC9F8B',
-    },
-    secondary: {
-      main: '#B5CFB7',
-    },
-    background: {
-      default: '#E7E8D8',
-    },
-    text: {
-      primary: '#000000',
-    },
-  },
-});
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { Fade } from '@mui/material';
 
 const menuItems = [
   {
@@ -65,6 +48,53 @@ const menuItems = [
   }
 ];
 
+const ScrollToTop = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+    <Fade in={isVisible}>
+      <IconButton
+        onClick={scrollToTop}
+        sx={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: 'rgba(64, 93, 114, 0.7)',
+          color: '#F7E7DC',
+          '&:hover': {
+            backgroundColor: 'rgba(64, 93, 114, 0.9)',
+          },
+          zIndex: 1000,
+        }}
+      >
+        <ArrowUpwardIcon />
+      </IconButton>
+    </Fade>
+  );
+};
+
+
 export default function AppNavbar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentMenu, setCurrentMenu] = useState<string | null>(null);
@@ -89,13 +119,15 @@ export default function AppNavbar() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1 }}>
+    <>
+    
         <AppBar 
-          position="static" 
+          position="fixed"
           sx={{
-            background: 'linear-gradient(45deg, #BC9F8B 30%, #CADABF 90%)',
-            boxShadow: '0 3px 5px 2px rgba(188, 159, 139, .3)',
+            background: 'linear-gradient(135deg, rgba(255, 248, 243, 0.8) 0%, rgba(117, 134, 148, 0.8) 100%)',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            zIndex: 1000,
           }}
         >
           <Toolbar>
@@ -103,11 +135,11 @@ export default function AppNavbar() {
               size="large"
               edge="start"
               aria-label="menu"
-              sx={{ mr: 2, color: 'black' }}
+              sx={{ mr: 2, color: '#36454F' }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', color: '#E7E8D8' }}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', color: '#36454F' }}>
               HR Management
             </Typography>
             {menuItems.map((menu) => (
@@ -116,9 +148,9 @@ export default function AppNavbar() {
                   onClick={(e) => handleClick(e, menu.name)}
                   endIcon={<KeyboardArrowDownIcon />}
                   sx={{ 
-                    color: 'black',
+                    color: '#36454F',
                     '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                      backgroundColor: 'rgba(64, 93, 114, 0.1)',
                     },
                   }}
                 >
@@ -130,7 +162,8 @@ export default function AppNavbar() {
                   onClose={handleClose}
                   PaperProps={{
                     sx: {
-                      backgroundColor: '#E7E8D8',
+                      background: 'linear-gradient(135deg, rgba(255, 248, 243, 0.9) 0%, rgba(117, 134, 148, 0.9) 100%)',
+                      backdropFilter: 'blur(10px)',
                     },
                   }}
                 >
@@ -139,9 +172,9 @@ export default function AppNavbar() {
                       key={item.key} 
                       onClick={handleClose}
                       sx={{
-                        color: '#000',
+                        color: '#405D72',
                         '&:hover': {
-                          backgroundColor: 'rgba(188, 159, 139, 0.1)',
+                          backgroundColor: 'rgba(64, 93, 114, 0.1)',
                         },
                       }}
                     >
@@ -156,7 +189,7 @@ export default function AppNavbar() {
               size="large"
               edge="end"
               aria-label="user menu"
-              sx={{ color: 'black' }}
+              sx={{ color: '#405D72' }}
             >
               <AccountCircleIcon />
             </IconButton>
@@ -166,16 +199,16 @@ export default function AppNavbar() {
               onClose={handleUserMenuClose}
               PaperProps={{
                 sx: {
-                  backgroundColor: '#E7E8D8',
+                  backgroundColor: '#758694',
                 },
               }}
             >
               <MenuItem 
                 onClick={handleUserMenuClose}
                 sx={{
-                  color: '#000',
+                  color: '#F7E7DC',
                   '&:hover': {
-                    backgroundColor: 'rgba(188, 159, 139, 0.1)',
+                    backgroundColor: 'rgba(247, 231, 220, 0.1)',
                   },
                 }}
               >
@@ -184,18 +217,19 @@ export default function AppNavbar() {
               <MenuItem 
                 onClick={handleUserMenuClose}
                 sx={{
-                  color: '#000',
+                  color: '#F7E7DC',
                   '&:hover': {
-                    backgroundColor: 'rgba(188, 159, 139, 0.1)',
+                    backgroundColor: 'rgba(247, 231, 220, 0.1)',
                   },
                 }}
               >
                 Logout
               </MenuItem>
             </Menu>
-          </Toolbar>
+            </Toolbar>
         </AppBar>
-      </Box>
-    </ThemeProvider>
+      
+      <ScrollToTop />
+    </>
   );
 }
