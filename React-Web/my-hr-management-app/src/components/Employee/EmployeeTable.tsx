@@ -12,16 +12,27 @@ import {
   TableHead,
   TableRow,
   TablePagination,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Switch,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { Theme } from '@mui/material/styles';
 import { Employee } from '../../types/Employee';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // Styled components
 const SearchFilterContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(3),
   marginBottom: theme.spacing(3),
+  display: 'flex',
+  alignItems: 'center',
 }));
 
 const TableContainerStyled = styled(TableContainer)<{ theme: Theme }>(({ theme }) => ({
@@ -48,13 +59,14 @@ interface EmployeeTableProps {
 }
 
 const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
-  console.log(Array.isArray(employeeData)); // Should be true
-  console.log(employeeData);
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('');
   const [jobCategoryFilter, setJobCategoryFilter] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showActions, setShowActions] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const filteredEmployees = employeeData.filter(
     (employee) =>
@@ -78,6 +90,23 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleDeleteClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedEmployee) {
+      // Handle employee deletion here
+      console.log('Delete employee:', selectedEmployee);
+      setOpenDeleteDialog(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setOpenDeleteDialog(false);
   };
 
   return (
@@ -122,6 +151,15 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
             </MenuItem>
           ))}
         </Select>
+
+        <Box sx={{ marginRight: 2 }}>
+          <Switch
+            checked={showActions}
+            onChange={() => setShowActions(!showActions)}
+            color="primary"
+          />
+          <span style={{ color: '#36454F' }}>Allow Changes</span>
+        </Box>
       </SearchFilterContainer>
 
       <TableContainerStyled component={Paper}>
@@ -134,6 +172,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
               <StyledTableCell>Email</StyledTableCell>
               <StyledTableCell>Phone Number</StyledTableCell>
               <StyledTableCell>Date Of Birth</StyledTableCell>
+              {showActions && <StyledTableCell>Actions</StyledTableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -147,6 +186,16 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
                   <StyledTableCell>{employee.email}</StyledTableCell>
                   <StyledTableCell>{employee.phone_number}</StyledTableCell>
                   <StyledTableCell>{employee.date_of_birth}</StyledTableCell>
+                  {showActions && (
+                    <StyledTableCell>
+                      <IconButton aria-label='edit'>
+                        <EditIcon style={{ color: '#36454F' }} />
+                      </IconButton>
+                      <IconButton aria-label='delete' onClick={() => handleDeleteClick(employee)}>
+                        <DeleteIcon style={{ color: '#36454F' }} />
+                      </IconButton>
+                    </StyledTableCell>
+                  )}
                 </TableRow>
               ))}
           </TableBody>
@@ -161,6 +210,23 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+        <Box  style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
+                              backdropFilter: 'blur(10px)',}} > 
+          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogContent>
+            Are you sure you want to move this employee to the trash?
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelDelete} color='primary'>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} color='primary'>
+              Confirm
+            </Button>
+          </DialogActions>
+          </Box> 
+      </Dialog>
     </>
   );
 };
