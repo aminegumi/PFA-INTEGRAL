@@ -4,6 +4,7 @@ import employeesReducer from '../features/employees/employeesSlice';
 export const store = configureStore({
   reducer: {
     employees: employeesReducer,
+    // Ajoutez d'autres reducers ici si nécessaire
   },
 });
 

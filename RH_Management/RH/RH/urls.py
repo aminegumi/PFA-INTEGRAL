@@ -23,7 +23,7 @@ router = DefaultRouter()
 router.register(r'departement', DepartementViewSet)
 router.register(r'jobCategorie',JobCategoriesViewSet)
 router.register(r'experience', ExperienceViewSet)
-router.register(r'employee', EmployeeViewsSet)
+router.register(r'employee', EmployeeViewSet)
 router.register(r'academicCurriculum', AcademicCurriculumViewSet)
 
 

@@ -70,7 +70,7 @@ class Experience(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     description = models.TextField(blank=True)
-    employee = models.ForeignKey(Employee, related_name="experiences", on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.job_title} at {self.company_name}"
@@ -80,7 +80,7 @@ class AcademicCurriculum(models.Model):
     diplome = models.CharField(max_length=50)
     school = models.CharField(max_length=150)
     date_of_obtaining = models.DateField()
-    employee = models.ForeignKey(Employee, related_name="diplomes", on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.diplome

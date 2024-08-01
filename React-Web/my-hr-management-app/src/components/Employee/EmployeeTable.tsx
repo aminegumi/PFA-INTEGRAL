@@ -16,6 +16,7 @@ import {
 import { styled } from '@mui/system';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { Theme } from '@mui/material/styles';
+import { Employee } from '../../types/Employee';
 
 // Styled components
 const SearchFilterContainer = styled(Box)(({ theme }) => ({
@@ -24,45 +25,51 @@ const SearchFilterContainer = styled(Box)(({ theme }) => ({
 }));
 
 const TableContainerStyled = styled(TableContainer)<{ theme: Theme }>(({ theme }) => ({
-    marginTop: theme.spacing(3),
-    backgroundColor: 'rgba(255, 248, 243, 0.8)',
-    backdropFilter: 'blur(10px)',
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[1],
+  marginTop: theme.spacing(3),
+  backgroundColor: 'rgba(255, 248, 243, 0.8)',
+  backdropFilter: 'blur(10px)',
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: '#758694', // The darker color from your background
+    backgroundColor: '#758694',
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
-    color: '#405D72', // The color you're using for text elsewhere
+    color: '#405D72',
   },
 }));
 
-const EmployeeTable: React.FC<{ employeeData: any[] }> = ({ employeeData }) => {
+interface EmployeeTableProps {
+  employeeData: Employee[];
+}
+
+const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
+  console.log(Array.isArray(employeeData)); // Should be true
+  console.log(employeeData);
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('');
-  const [roleFilter, setRoleFilter] = useState('');
+  const [jobCategoryFilter, setJobCategoryFilter] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const filteredEmployees = employeeData.filter(
     (employee) =>
-      employee.fullName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (departmentFilter === '' || employee.department === departmentFilter) &&
-      (roleFilter === '' || employee.role === roleFilter)
+      `${employee.firstname} ${employee.lastname}`.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (departmentFilter === '' || employee.departement.label === departmentFilter) &&
+      (jobCategoryFilter === '' || employee.job_categorie.label === jobCategoryFilter)
   );
 
   // Extract unique departments
-  const departments = Array.from(new Set(employeeData.map((employee) => employee.department)));
+  const departments = Array.from(new Set(employeeData.map((employee) => employee.departement.label)));
   const departmentOptions = ['All Departments', ...departments];
 
-  // Extract unique roles
-  const roles = Array.from(new Set(employeeData.map((employee) => employee.role)));
-  const roleOptions = ['All Roles', ...roles];
+  // Extract unique job categories
+  const jobCategories = Array.from(new Set(employeeData.map((employee) => employee.job_categorie.label)));
+  const jobCategoryOptions = ['All Job Categories', ...jobCategories];
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -84,10 +91,10 @@ const EmployeeTable: React.FC<{ employeeData: any[] }> = ({ employeeData }) => {
           sx={{
             marginRight: 2,
             '& .MuiInputLabel-root': {
-              color: '#405D72', // Text color of the label when not focused
+              color: '#405D72',
             },
             '& .MuiInputLabel-root.Mui-focused': {
-              color: '#405D72', // Text color of the label when focused
+              color: '#405D72',
             },
           }}
         />
@@ -99,61 +106,57 @@ const EmployeeTable: React.FC<{ employeeData: any[] }> = ({ employeeData }) => {
           sx={{ marginRight: 2 }}
         >
           {departmentOptions.map((department, index) => (
-            <MenuItem key={index} value={department === 'All Departments' ? '' : department} style={{ 
-                color: 'rgba(224, 224, 224, 1)', 
-            }}>
+            <MenuItem key={index} value={department === 'All Departments' ? '' : department}>
               {department}
             </MenuItem>
           ))}
         </Select>
         <Select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
+          value={jobCategoryFilter}
+          onChange={(e) => setJobCategoryFilter(e.target.value)}
           displayEmpty
         >
-          {roleOptions.map((role, index) => (
-            <MenuItem key={index} value={role === 'All Roles' ? '' : role} style={{ 
-                color: 'rgba(224, 224, 224, 1)',  
-            }}>
-              {role}
+          {jobCategoryOptions.map((category, index) => (
+            <MenuItem key={index} value={category === 'All Job Categories' ? '' : category}>
+              {category}
             </MenuItem>
           ))}
         </Select>
       </SearchFilterContainer>
 
-      <Box>
-        <TableContainerStyled component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Full Name</StyledTableCell>
-                <StyledTableCell>Department</StyledTableCell>
-                <StyledTableCell>Role</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredEmployees
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((employee) => (
-                  <TableRow key={employee.id}>
-                    <StyledTableCell>{employee.fullName}</StyledTableCell>
-                    <StyledTableCell>{employee.department}</StyledTableCell>
-                    <StyledTableCell>{employee.role}</StyledTableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainerStyled>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={filteredEmployees.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Box>
+      <TableContainerStyled component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Full Name</StyledTableCell>
+              <StyledTableCell>Department</StyledTableCell>
+              <StyledTableCell>Job Category</StyledTableCell>
+              <StyledTableCell>Email</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredEmployees
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((employee) => (
+                <TableRow key={employee.id}>
+                  <StyledTableCell>{`${employee.firstname} ${employee.lastname}`}</StyledTableCell>
+                  <StyledTableCell>{employee.departement.label}</StyledTableCell>
+                  <StyledTableCell>{employee.job_categorie.label}</StyledTableCell>
+                  <StyledTableCell>{employee.email}</StyledTableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainerStyled>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={filteredEmployees.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </>
   );
 };

@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -32,15 +33,16 @@ class ExperienceViewSet(viewsets.ModelViewSet) :
     serializer_class = ExperienceSerializer
 
 
-class EmployeeViewsSet(viewsets.ModelViewSet):
+class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
-    @action(detail=False, methods=['get'])
-    def detailed_list(self, request):
-        employees = Employee.objects.prefetch_related('experiences', 'diplomes').order_by('id', 'experiences__id', 'diplomes__id')
-        serializer = self.get_serializer(employees, many=True)
-        return Response(serializer.data)
+    # @action(detail=False, methods=['get'])
+    # def detailed_list(self, request):
+    #     employees = Employee.objects.prefetch_related('experiences', 'diplomes').order_by('id', 'experiences__id', 'diplomes__id')
+    #     serializer = self.get_serializer(employees, many=True)
+    #     return Response(serializer.data)
+
 
 class AcademicCurriculumViewSet(viewsets.ModelViewSet):
     queryset = AcademicCurriculum.objects.all()

@@ -39,10 +39,11 @@ for _ in range(50):
         phone_number = fake.phone_number(),
         salary = round(random.uniform(30000, 120000), 2),
         RIB = fake.bban(),
-        hired_at = fake.date_this_decade(),
-        departement = random.choice(departments),
-        emp_responsable = random.choice(employees) if employees else None,
         job_categorie = random.choice(job_categories),
+        departement = random.choice(departments),
+        hired_at = fake.date_this_decade(),
+        emp_responsable = random.choice(employees) if employees else None,
+        
     )
     employees.append(employee)
 
