@@ -132,6 +132,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
               <StyledTableCell>Department</StyledTableCell>
               <StyledTableCell>Job Category</StyledTableCell>
               <StyledTableCell>Email</StyledTableCell>
+              <StyledTableCell>Phone Number</StyledTableCell>
+              <StyledTableCell>Date Of Birth</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -143,6 +145,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
                   <StyledTableCell>{employee.departement.label}</StyledTableCell>
                   <StyledTableCell>{employee.job_categorie.label}</StyledTableCell>
                   <StyledTableCell>{employee.email}</StyledTableCell>
+                  <StyledTableCell>{employee.phone_number}</StyledTableCell>
+                  <StyledTableCell>{employee.date_of_birth}</StyledTableCell>
                 </TableRow>
               ))}
           </TableBody>
