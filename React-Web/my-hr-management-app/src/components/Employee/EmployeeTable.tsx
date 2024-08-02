@@ -24,8 +24,11 @@ import { styled } from '@mui/system';
 import { tableCellClasses } from '@mui/material/TableCell';
 import { Theme } from '@mui/material/styles';
 import { Employee } from '../../types/Employee';
+import EmployeeCard  from './EmployeeCard';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+
 
 // Styled components
 const SearchFilterContainer = styled(Box)(({ theme }) => ({
@@ -67,6 +70,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
   const [showActions, setShowActions] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [openProfilCard, setOpenProfilCard] = useState(false);
 
   const filteredEmployees = employeeData.filter(
     (employee) =>
@@ -95,7 +99,14 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
   const handleDeleteClick = (employee: Employee) => {
     setSelectedEmployee(employee);
     setOpenDeleteDialog(true);
+    console.log(employee);
   };
+
+  const handleProfileClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setOpenProfilCard(true);
+    console.log(employee);
+  }
 
   const handleConfirmDelete = () => {
     if (selectedEmployee) {
@@ -108,6 +119,10 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
   const handleCancelDelete = () => {
     setOpenDeleteDialog(false);
   };
+
+  const handleCloseProfilCard = () => {
+    setOpenProfilCard(false);
+  }
 
   return (
     <>
@@ -135,7 +150,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
           sx={{ marginRight: 2 }}
         >
           {departmentOptions.map((department, index) => (
-            <MenuItem key={index} value={department === 'All Departments' ? '' : department}>
+            <MenuItem key={index} value={department === 'All Departments' ? '' : department} style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
+              backdropFilter: 'blur(10px)',}}>
               {department}
             </MenuItem>
           ))}
@@ -146,7 +162,8 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
           displayEmpty
         >
           {jobCategoryOptions.map((category, index) => (
-            <MenuItem key={index} value={category === 'All Job Categories' ? '' : category}>
+            <MenuItem key={index} value={category === 'All Job Categories' ? '' : category}  style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
+              backdropFilter: 'blur(10px)',}}>
               {category}
             </MenuItem>
           ))}
@@ -166,12 +183,12 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
         <Table>
           <TableHead>
             <TableRow>
+              <StyledTableCell>Card</StyledTableCell>
               <StyledTableCell>Full Name</StyledTableCell>
               <StyledTableCell>Department</StyledTableCell>
               <StyledTableCell>Job Category</StyledTableCell>
               <StyledTableCell>Email</StyledTableCell>
               <StyledTableCell>Phone Number</StyledTableCell>
-              <StyledTableCell>Date Of Birth</StyledTableCell>
               {showActions && <StyledTableCell>Actions</StyledTableCell>}
             </TableRow>
           </TableHead>
@@ -180,12 +197,16 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((employee) => (
                 <TableRow key={employee.id}>
+                  <StyledTableCell>
+                    <IconButton aria-label='Profil-Card' onClick={() => handleProfileClick(employee)}>
+                      <AccountBoxIcon style={{ color: '#36454F' }} />
+                    </IconButton>
+                  </StyledTableCell>
                   <StyledTableCell>{`${employee.firstname} ${employee.lastname}`}</StyledTableCell>
                   <StyledTableCell>{employee.departement.label}</StyledTableCell>
                   <StyledTableCell>{employee.job_categorie.label}</StyledTableCell>
                   <StyledTableCell>{employee.email}</StyledTableCell>
                   <StyledTableCell>{employee.phone_number}</StyledTableCell>
-                  <StyledTableCell>{employee.date_of_birth}</StyledTableCell>
                   {showActions && (
                     <StyledTableCell>
                       <IconButton aria-label='edit'>
@@ -225,7 +246,10 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
               Confirm
             </Button>
           </DialogActions>
-          </Box> 
+        </Box> 
+      </Dialog>
+      <Dialog open={openProfilCard} onClose={handleCloseProfilCard}>
+        <EmployeeCard employee={selectedEmployee} />
       </Dialog>
     </>
   );

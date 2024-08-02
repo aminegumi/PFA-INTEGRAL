@@ -82,10 +82,11 @@ const Home: React.FC = () => {
                                                 cursor: 'default' }}>
         HR Management Dashboard
       </Typography>
-      <Grid container spacing={3} style={{cursor: 'pointer'}}>
+      <Grid container spacing={3} style={{cursor: 'pointer'}} >
         {dashboardItems.map((item, index) => (
           <Grid item xs={12} sm={6} md={3} key={index} onClick={() => handleItemClick(item.label)}>
-            <DashboardItem elevation={3}>
+            <DashboardItem elevation={3} style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
+                                                  backdropFilter: 'blur(10px)',}} >
               <IconWrapper>
                 {React.cloneElement(item.icon, { style: { color: 'white', fontSize: 30 }})}
               </IconWrapper>
