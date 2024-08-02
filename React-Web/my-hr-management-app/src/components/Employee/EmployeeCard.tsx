@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Employee } from '../../types/Employee';
 import { Avatar, Box, Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import EmployeeForm from './EmployeeForm';
 
 interface EmployeeCardProps {
   employee: Employee | null;
 }
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
+  const [isEditing, setIsEditing] = useState(false);
   if (!employee) {
     return null
   }
@@ -17,7 +19,15 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
       // Handle employee deletion here
       console.log('Update employee informations:', employee);
     }
+    setIsEditing(true)
   };
+  const handleCancelUpdate = () => {
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return <EmployeeForm employee={employee} onCancel={handleCancelUpdate} />
+  }
 
   return (
     <Box style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',

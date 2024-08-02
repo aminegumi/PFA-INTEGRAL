@@ -47,27 +47,27 @@ for _ in range(50):
     )
     employees.append(employee)
 
-#Generate Experiences
-experiences = []
-for _ in range(100):
-    experience = Experience.objects.create(
-        job_title=fake.job(),
-        company_name=fake.company(),
-        start_date=fake.date_between(start_date='-10y', end_date='-1y'),
-        end_date=fake.date_between(start_date='-1y', end_date='today'),
-        description=fake.text(),
-        employee_id=random.choice(employees)
-    )
-    experiences.append(experience)
+# #Generate Experiences
+# experiences = []
+# for _ in range(100):
+#     experience = Experience.objects.create(
+#         job_title=fake.job(),
+#         company_name=fake.company(),
+#         start_date=fake.date_between(start_date='-10y', end_date='-1y'),
+#         end_date=fake.date_between(start_date='-1y', end_date='today'),
+#         description=fake.text(),
+#         employee_id=random.choice(employees)
+#     )
+#     experiences.append(experience)
 
-academicCurriculums = []
-for _ in range(70):
-    academicCurriculum = AcademicCurriculum.objects.create(
-        diplome = fake.sentence(),
-        school = fake.sentence(),
-        date_of_obtaining = fake.date(),
-        employee_id = random.choice(employees)
-    )
-    academicCurriculums.append(academicCurriculum)
+# academicCurriculums = []
+# for _ in range(70):
+#     academicCurriculum = AcademicCurriculum.objects.create(
+#         diplome = fake.sentence(),
+#         school = fake.sentence(),
+#         date_of_obtaining = fake.date(),
+#         employee_id = random.choice(employees)
+#     )
+#     academicCurriculums.append(academicCurriculum)
 
-print(f"Created {len(departments)} departments, {len(job_categories)} job categories, {len(employees)} employees, {len(academicCurriculums)} academic ,and {len(experiences)}.")
+print(f"Created {len(departments)} departments, {len(job_categories)} job categories, {len(employees)} employees, {len(employees)} academic ,and {len(employees)}.")
