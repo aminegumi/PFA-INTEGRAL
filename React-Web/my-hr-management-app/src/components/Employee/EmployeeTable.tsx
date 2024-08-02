@@ -28,6 +28,8 @@ import EmployeeCard  from './EmployeeCard';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import EmployeeForm from './EmployeeForm';
+
 
 
 // Styled components
@@ -44,6 +46,25 @@ const TableContainerStyled = styled(TableContainer)<{ theme: Theme }>(({ theme }
   backdropFilter: 'blur(10px)',
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[1],
+  maxHeight: '70vh', // Limit the height to enable scrolling
+  overflowY: 'auto', // Enable vertical scrolling
+  '&::-webkit-scrollbar': {
+    width: '12px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'rgba(255, 248, 243, 0.5)',
+    borderRadius: '10px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: '#758694',
+    borderRadius: '10px',
+    border: '3px solid rgba(255, 248, 243, 0.5)',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    backgroundColor: '#405D72',
+  },
+  scrollbarWidth: 'thin',
+  scrollbarColor: '#758694 rgba(255, 248, 243, 0.5)',
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -71,6 +92,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [openProfilCard, setOpenProfilCard] = useState(false);
+  const [openEditForm, setOpenEditForm ] = useState(false);
 
   const filteredEmployees = employeeData.filter(
     (employee) =>
@@ -123,6 +145,18 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
   const handleCloseProfilCard = () => {
     setOpenProfilCard(false);
   }
+
+  const handleEdit = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setOpenEditForm(true);
+  }
+
+  const handleCancelUpdate = () => {
+    setOpenEditForm(false);
+  }
+
+  
+  
 
   return (
     <>
@@ -180,7 +214,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
       </SearchFilterContainer>
 
       <TableContainerStyled component={Paper}>
-        <Table>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <StyledTableCell>Card</StyledTableCell>
@@ -209,7 +243,7 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
                   <StyledTableCell>{employee.phone_number}</StyledTableCell>
                   {showActions && (
                     <StyledTableCell>
-                      <IconButton aria-label='edit'>
+                      <IconButton aria-label='edit' onClick={() => handleEdit(employee)}>
                         <EditIcon style={{ color: '#36454F' }} />
                       </IconButton>
                       <IconButton aria-label='delete' onClick={() => handleDeleteClick(employee)}>
@@ -250,6 +284,9 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
       </Dialog>
       <Dialog open={openProfilCard} onClose={handleCloseProfilCard}>
         <EmployeeCard employee={selectedEmployee} />
+      </Dialog>
+      <Dialog open={openEditForm} onClose={handleCancelUpdate} fullWidth maxWidth="md">
+        <EmployeeForm employee={selectedEmployee} onCancel={handleCancelUpdate} />
       </Dialog>
     </>
   );
