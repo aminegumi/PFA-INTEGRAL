@@ -71,6 +71,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'user.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+CORS_ALLOWED_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", #front-end URL
 ]
@@ -128,6 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+
 
 
 # Internationalization

@@ -6,9 +6,14 @@ import {
   Typography, 
   Paper, 
   Container,
-  Grid
+  Grid,
+  Snackbar,
+  Alert,
+  Link
 } from '@mui/material';
 import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -23,17 +28,35 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleSubmit = (event: React.FormEvent) => {
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt with:', { email, password });
+    setError('');
+    setSuccess('');
+
+    try {
+      console.log('Request payload:', { email, password });
+      const response = await api.post('/api/login/', { email, password });
+      console.log(response);
+      // Store the token in localStorage
+      localStorage.setItem('token', response.data.token);
+      setSuccess('Login successful');
+      navigate('/home');
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.non_field_errors || 'Invalid email or password');
+      } else {
+        setError('An unexpected error occurred');
+      }
+    }
   };
 
   const handleCreateAccount = (event: React.MouseEvent) => {
     event.preventDefault();
-    // Handle create account logic here
-    console.log('Create account clicked');
+    navigate('/register');
   };
 
   return (
@@ -102,43 +125,43 @@ const LoginPage: React.FC = () => {
               }}
             />
             <Grid container spacing={2} sx={{ mt: 3, mb: 2 }}>
-              <Grid item xs={6}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ 
-                    backgroundColor: '#405D72',
-                    color: '#F7E7DC',
-                    '&:hover': {
-                      backgroundColor: '#758694',
-                    },
-                  }}
-                >
-                  Sign In
-                </Button>
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ 
+                      backgroundColor: '#405D72',
+                      color: '#F7E7DC',
+                      '&:hover': {
+                        backgroundColor: '#758694',
+                      },
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={handleCreateAccount}
-                  sx={{ 
-                    borderColor: '#405D72',
-                    color: '#405D72',
-                    '&:hover': {
-                      backgroundColor: 'rgba(64, 93, 114, 0.04)',
-                      borderColor: '#758694',
-                    },
-                  }}
-                >
-                  Create 
-                </Button>
+              <Grid container justifyContent="flex-end">
+                <Grid item>
+                  <Link href="#" variant="body2" onClick={handleCreateAccount}>
+                    Don't have an account? Sign up
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </StyledPaper>
-      </Box>
+            </Box>
+          </StyledPaper>
+        </Box>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')}>
+        <Alert onClose={() => setError('')} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={!!success} autoHideDuration={6000} onClose={() => setSuccess('')}>
+        <Alert onClose={() => setSuccess('')} severity="success" sx={{ width: '100%' }}>
+          {success}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
