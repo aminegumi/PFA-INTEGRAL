@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { updateEmployee } from '../../features/employees/employeesSlice';
-import { Employee } from '../../types/Employee';
+import { Employee, Department, JobCategory } from '../../types/Employee';
 import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, Typography } from '@mui/material';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -10,6 +10,8 @@ import { styled } from '@mui/system';
 interface EmployeeFormProps {
   employee: Employee | null;
   onCancel: () => void;
+  onAddEmployee?: (newEmployee: Employee) => void;
+  onUpdateEmployee?: (updatedEmployee: Employee) => void;
 }
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -50,17 +52,22 @@ const StyledButton = styled(Button)(({ theme }) => ({
   marginRight: theme.spacing(1),
 }));
 
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
-  if(!employee){
-    return null
-  }
+type formData = Partial<Employee> & {
+  departement?: Department;
+  job_categorie?: JobCategory;
+}
+
+const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel, onAddEmployee, onUpdateEmployee }) => {
   const dispatch = useAppDispatch();
-  const [formData, setFormData] = useState<Employee>(employee);
+  const [formData, setFormData] = useState<formData>(employee || {});
 
   useEffect(() => {
-    setFormData(employee);
+    if (employee) {
+      setFormData(employee);
+    }
     console.log(formData);
   }, [employee]);
+  
 
   const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -79,20 +86,49 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(updateEmployee({ id: employee.id, employee: formData }));
+    const employeeData = {
+      ...formData,
+      departement: { label: formData.departement?.label || '' },
+      job_categorie: { label: formData.job_categorie?.label || '' }
+    } as Employee;
+
+    if (employee) {
+      // Update existing employee
+      if (onUpdateEmployee) {
+        onUpdateEmployee(employeeData);
+      } else {
+        dispatch(updateEmployee({ id: employee.id, employee: employeeData }));
+      }
+    } else {
+      // Add new employee
+      if (onAddEmployee) {
+        onAddEmployee(employeeData);
+      }
+    }
     onCancel();
   };
+
+  // const handleSubmitEdit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (employee) {
+  //     dispatch(updateEmployee({ id: employee.id, employee: formData as Employee }));    
+  //   }
+  //   onCancel();
+  // };
+
+  const isAddMode = !employee;
+
 
   return (
     <StyledBox component="form" onSubmit={handleSubmit}>
       <Typography variant="h6" gutterBottom sx={{ color: '#36454F', fontWeight: 'bold' }}>
-        Edit Employee Information
+        {isAddMode ? 'Add New Employee' : 'Edit Employee Information'}
       </Typography>
       <StyledFormControl fullWidth>
         <TextField
           name="email"
           label="Email"
-          value={formData.email}
+          value={formData.email || ''}
           onChange={handleTextFieldChange}
           fullWidth
           required
@@ -103,7 +139,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <TextField
           name="phone_number"
           label="Phone"
-          value={formData.phone_number}
+          value={formData.phone_number || ''}
           onChange={handleTextFieldChange}
           fullWidth
           required
@@ -115,7 +151,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <Select
           labelId="gender-label"
           name="gender"
-          value={formData.gender}
+          value={formData.gender ||''}
           onChange={handleSelectChange}
           required
           label="Gender"
@@ -159,7 +195,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <TextField
           name="salary"
           label="Salary"
-          value={formData.salary}
+          value={formData.salary || ''}
           onChange={handleTextFieldChange}
           fullWidth
           required
@@ -172,7 +208,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <Select
           labelId="marital-status-label"
           name="marital_status"
-          value={formData.marital_status}
+          value={formData.marital_status ||''}
           onChange={handleSelectChange}
           required
           label="Marital Status"
@@ -189,7 +225,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <TextField
           name="nbr_of_children"
           label="Number of Children"
-          value={formData.nbr_of_children}
+          value={formData.nbr_of_children ||''}
           onChange={handleTextFieldChange}
           fullWidth
           required
@@ -202,7 +238,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <Select
           labelId="department-label"
           name="departement"
-          value={formData.departement.label}
+          value={formData.departement?.label || ''}
           onChange={handleSelectChange}
           required
           label="Department"
@@ -219,7 +255,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
         <Select
           labelId="job-category-label"
           name="job_categorie"
-          value={formData.job_categorie.label}
+          value={formData.job_categorie?.label || ''}
           onChange={handleSelectChange}
           required
           label="Job Category"
@@ -235,7 +271,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel }) => {
           Cancel
         </StyledButton>
         <StyledButton type="submit" variant="contained" color="primary">
-          Save Changes
+          {isAddMode ? 'Add Employee' : 'Save Changes'}
         </StyledButton>
       </Box>
     </StyledBox>

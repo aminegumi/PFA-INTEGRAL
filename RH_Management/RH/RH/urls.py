@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from Employees.views import *
+from user.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -30,7 +31,11 @@ router.register(r'academicCurriculum', AcademicCurriculumViewSet)
 
 
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include((router.urls, 'Employees'), namespace='Employees')),
+    path('api/register/', RegisterView.as_view(), name='register'),
+    path('api/login/', CustomAuthToken.as_view(), name='login'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

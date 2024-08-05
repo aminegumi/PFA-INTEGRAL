@@ -27,6 +27,7 @@ import { Employee } from '../../types/Employee';
 import EmployeeCard  from './EmployeeCard';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import EmployeeForm from './EmployeeForm';
 
@@ -39,6 +40,10 @@ const SearchFilterContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
 }));
+
+// const ButtonWrapper = styled(Box)(({ theme }) => ({
+//   marginLeft: 'auto', // This pushes the button to the extreme right
+// }));
 
 const TableContainerStyled = styled(TableContainer)<{ theme: Theme }>(({ theme }) => ({
   marginTop: theme.spacing(3),
@@ -124,6 +129,13 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
     console.log(employee);
   };
 
+  // const StyledButton = styled(Button)(({ theme }) => ({
+  //   marginTop: theme.spacing(2),
+  //   marginRight: theme.spacing(1),
+  //   padding: theme.spacing(1.5, 3),  
+  //   minWidth: '150px',
+  // }));
+
   const handleProfileClick = (employee: Employee) => {
     setSelectedEmployee(employee);
     setOpenProfilCard(true);
@@ -155,6 +167,18 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
     setOpenEditForm(false);
   }
 
+  const handleAddClick = () => {
+    setOpenEditForm(true);
+  }
+
+  const AddEmployeeButton = styled(Button)(({ theme }) => ({
+    marginLeft: 'auto',
+    backgroundColor: '#758694',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#405D72',
+    },
+  }));
   
   
 
@@ -211,6 +235,13 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
           />
           <span style={{ color: '#36454F' }}>Allow Changes</span>
         </Box>
+        <AddEmployeeButton
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleAddClick}
+        >
+          Add Employee
+        </AddEmployeeButton>
       </SearchFilterContainer>
 
       <TableContainerStyled component={Paper}>
@@ -291,5 +322,4 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({ employeeData }) => {
     </>
   );
 };
-
 export default EmployeeTable;
