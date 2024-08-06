@@ -230,18 +230,18 @@ export default function AppNavbar() {
                 },
               }}
             >
-              <StyledMenuItem onClick={handleLogout}>
+              <StyledMenuItem >
                 <StyledIconButton size="small" edge="end">
                   <AccountBoxIcon />
                 </StyledIconButton>
-                Profile
+                  Profile
               </StyledMenuItem>
 
               <StyledMenuItem onClick={handleLogout}>
                 <StyledIconButton size="small" edge="end">
                   <LogoutIcon />
                 </StyledIconButton>
-                Logout
+                  Logout
               </StyledMenuItem>
             </Menu>
             </Toolbar>

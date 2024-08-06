@@ -1,15 +1,8 @@
 // src/types/Employee.ts
 
-export interface JobCategory {
-    id: number;
-    label: string;
-    main_mission: string;
-}
-  
-export interface Department {
-    id: number;
-    label: string;
-}
+
+import { JobCategory } from "./JobCategory";
+import { Department } from "./Department";
   
 export interface Employee {
     id: number;

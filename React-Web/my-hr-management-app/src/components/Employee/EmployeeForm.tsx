@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { updateEmployee } from '../../features/employees/employeesSlice';
-import { Employee, Department, JobCategory } from '../../types/Employee';
+import { Employee } from '../../types/Employee';
+import { Department } from '../../types/Department';
+import { JobCategory } from '../../types/JobCategory';
 import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, Typography } from '@mui/material';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -60,13 +62,29 @@ type formData = Partial<Employee> & {
 const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel, onAddEmployee, onUpdateEmployee }) => {
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<formData>(employee || {});
+  const [departments, setDepartments] = useState<Department[]>([]);
 
   useEffect(() => {
     if (employee) {
       setFormData(employee);
     }
-    console.log(formData);
+    fetchDepartments();
   }, [employee]);
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch('/api/departement/');
+      console.log('departements : ', response);
+      if (response.ok) {
+        const data = await response.json();
+        setDepartments(data);
+      } else {
+        console.error('Failed to fetch departments');
+      }
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
   
 
   const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,15 +256,15 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onCancel, onAddEm
         <Select
           labelId="department-label"
           name="departement"
-          value={formData.departement?.label || ''}
+          value={formData.departement?.id || ''}
           onChange={handleSelectChange}
           required
           label="Department"
         > 
-          <Box style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
-                      backdropFilter: 'blur(10px)',}}>
-            <MenuItem value="1">Department 1</MenuItem>
-            <MenuItem value="2">Department 2</MenuItem>
+          <Box style={{backgroundColor: 'rgba(255, 248, 243, 0.8)', backdropFilter: 'blur(10px)'}}>
+            {departments.map((dept) => (
+              <MenuItem key={dept.id} value={dept.id}>{dept.label}</MenuItem>
+            ))}
           </Box>
         </Select>
       </StyledFormControl>
