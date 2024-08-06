@@ -9,6 +9,7 @@ import EmployeeTable from '../components/Employee/EmployeeTable';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fetchEmployees } from '../features/employees/employeesSlice';
 import { useEffect } from 'react';
+import AppNavbar from '../components/Navbar';
 
 
 const DashboardContainer = styled(Box)(({ theme }) => ({
@@ -74,26 +75,29 @@ const Home: React.FC = () => {
   if (status === 'failed' ) return <div>Error: {error}</div>;
 
   return (
-    <DashboardContainer>
-      <Typography variant="h4" gutterBottom sx={{ 
-                                                color: '#405D72',
-                                                textAlign: 'center',
-                                                marginBottom: 4,
-                                                cursor: 'default' }}>
+    <><AppNavbar /><DashboardContainer>
+      <Typography variant="h4" gutterBottom sx={{
+        color: '#405D72',
+        textAlign: 'center',
+        marginBottom: 4,
+        cursor: 'default'
+      }}>
         HR Management Dashboard
       </Typography>
-      <Grid container spacing={3} style={{cursor: 'pointer'}} >
+      <Grid container spacing={3} style={{ cursor: 'pointer' }}>
         {dashboardItems.map((item, index) => (
           <Grid item xs={12} sm={6} md={3} key={index} onClick={() => handleItemClick(item.label)}>
-            <DashboardItem elevation={3} style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
-                                                  backdropFilter: 'blur(10px)',}} >
+            <DashboardItem elevation={3} style={{
+              backgroundColor: 'rgba(255, 248, 243, 0.8)',
+              backdropFilter: 'blur(10px)',
+            }}>
               <IconWrapper>
-                {React.cloneElement(item.icon, { style: { color: 'white', fontSize: 30 }})}
+                {React.cloneElement(item.icon, { style: { color: 'white', fontSize: 30 } })}
               </IconWrapper>
-              <Typography variant="h6" component="h2" style={{ color: '#405D72', userSelect: 'text'}}>
+              <Typography variant="h6" component="h2" style={{ color: '#405D72', userSelect: 'text' }}>
                 {item.label}
               </Typography>
-              <Typography variant="h4" component="p" style={{ color: '#405D72', userSelect: 'text'}}>
+              <Typography variant="h4" component="p" style={{ color: '#405D72', userSelect: 'text' }}>
                 {item.value}
               </Typography>
             </DashboardItem>
@@ -102,7 +106,7 @@ const Home: React.FC = () => {
       </Grid>
 
       {showEmployeeDetails && Array.isArray(employees) && <EmployeeTable employeeData={employees} />}
-    </DashboardContainer>
+    </DashboardContainer></>
   );
 };
 

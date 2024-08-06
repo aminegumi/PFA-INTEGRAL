@@ -3,6 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
+import AuthWrapper from './components/AuthWrapper';
 
 // Placeholder components
 const PlaceholderComponent: React.FC<{ name: string }> = ({ name }) => (
@@ -11,14 +14,18 @@ const PlaceholderComponent: React.FC<{ name: string }> = ({ name }) => (
 
 const AppRoutes: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/employees" element={<PlaceholderComponent name="Employees" />} />
-      <Route path="/departments" element={<PlaceholderComponent name="Departments" />} />
-      <Route path="/job-categories" element={<PlaceholderComponent name="Job Categories" />} />
-      <Route path="*" element={<PlaceholderComponent name="Not Found" />} />
+    <Routes> 
+      <Route path="/register" element={<RegisterPage />} /> 
+      <Route element={<AuthWrapper />}>    
+        <Route path="/login" element={<LoginPage />} />
+        <Route element={<ProtectedRoute/>}>
+          <Route path="/" element={<Home />} />
+          <Route path="/employees" element={<PlaceholderComponent name="Employees" />} />
+          <Route path="/departments" element={<PlaceholderComponent name="Departments" />} />
+          <Route path="/job-categories" element={<PlaceholderComponent name="Job Categories" />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 };

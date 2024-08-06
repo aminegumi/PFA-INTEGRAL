@@ -40,11 +40,10 @@ const LoginPage: React.FC = () => {
     try {
       console.log('Request payload:', { email, password });
       const response = await api.post('/api/login/', { email, password });
-      console.log(response);
       // Store the token in localStorage
       localStorage.setItem('token', response.data.token);
       setSuccess('Login successful');
-      navigate('/home');
+      navigate('/');
     } catch (err) {
       if (err.response) {
         setError(err.response.data.non_field_errors || 'Invalid email or password');

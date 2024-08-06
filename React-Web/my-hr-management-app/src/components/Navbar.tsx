@@ -11,6 +11,10 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Fade } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import { styled } from '@mui/system';
 
 const menuItems = [
   {
@@ -47,6 +51,24 @@ const menuItems = [
     ]
   }
 ];
+
+
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  color: '#F7E7DC',
+  padding: theme.spacing(1.5, 2),
+  borderRadius: theme.shape.borderRadius,
+  '&:hover': {
+    backgroundColor: 'rgba(247, 231, 220, 0.2)',
+  },
+}));
+
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  color: '#F7E7DC',
+  marginRight: theme.spacing(1),
+  '&:hover': {
+    color: '#F7E7DC',
+  },
+}));
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -117,6 +139,11 @@ export default function AppNavbar() {
   const handleUserMenuClose = () => {
     setUserMenuAnchorEl(null);
   };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate("/login")
+  }
 
   return (
     <>
@@ -203,28 +230,19 @@ export default function AppNavbar() {
                 },
               }}
             >
-              <MenuItem 
-                onClick={handleUserMenuClose}
-                sx={{
-                  color: '#F7E7DC',
-                  '&:hover': {
-                    backgroundColor: 'rgba(247, 231, 220, 0.1)',
-                  },
-                }}
-              >
+              <StyledMenuItem onClick={handleLogout}>
+                <StyledIconButton size="small" edge="end">
+                  <AccountBoxIcon />
+                </StyledIconButton>
                 Profile
-              </MenuItem>
-              <MenuItem 
-                onClick={handleUserMenuClose}
-                sx={{
-                  color: '#F7E7DC',
-                  '&:hover': {
-                    backgroundColor: 'rgba(247, 231, 220, 0.1)',
-                  },
-                }}
-              >
+              </StyledMenuItem>
+
+              <StyledMenuItem onClick={handleLogout}>
+                <StyledIconButton size="small" edge="end">
+                  <LogoutIcon />
+                </StyledIconButton>
                 Logout
-              </MenuItem>
+              </StyledMenuItem>
             </Menu>
             </Toolbar>
         </AppBar>

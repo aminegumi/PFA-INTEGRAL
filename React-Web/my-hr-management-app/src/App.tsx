@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import AppNavbar from './components/Navbar';
 import AppRoutes from './routes';
 import StaticBackground from './components/AnimatedBackground';
 import './assets/styles/index.css';
@@ -31,7 +30,6 @@ const App: React.FC = () => {
       <Router>
         <div className="min-h-screen font-sans antialiased relative">
           <StaticBackground />
-          <AppNavbar />
           <main className="pt-16 flex-grow flex items-center justify-center relative z-10">
             <div className='container mx-auto px-4 py-8'>
               <AppRoutes />
