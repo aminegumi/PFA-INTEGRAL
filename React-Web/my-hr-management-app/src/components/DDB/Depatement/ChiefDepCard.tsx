@@ -1,26 +1,20 @@
 import React, { useState } from 'react';
-import { Employee } from '../../types/Employee';
-import { Avatar, Box, Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import EmployeeForm from './EmployeeForm';
+import { Employee } from '../../../types/Employee';
+import { Box, DialogContent } from '@mui/material';
+import EmployeeForm from '../../Employee/EmployeeForm';
 
 interface EmployeeCardProps {
   employee: Employee | null;
 }
 
-const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
+const ChiefDepCard: React.FC<EmployeeCardProps> = ({ employee }) => {
   const [isEditing, setIsEditing] = useState(false);
   if (!employee) {
     return null
   }
 
 
-  const handleUpdate = () => {
-    if (employee) {
-      // Handle employee deletion here
-      console.log('Update employee informations:', employee);
-    }
-    setIsEditing(true)
-  };
+  
   const handleCancelUpdate = () => {
     setIsEditing(false);
   };
@@ -32,14 +26,6 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
   return (
     <Box style={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
         backdropFilter: 'blur(10px)',}}>
-        <DialogTitle display='flex' >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-            <Avatar src={employee.image} sx={{marginRight: 7}} /> 
-            <Box sx={{ flexGrow: 1, marginLeft: '-48px', fontWeight: 'bold', }}>
-              {employee.firstname} {employee.lastname}
-            </Box>
-          </Box>
-        </DialogTitle>
         <DialogContent>
           <Box sx={{ padding: 2}}>
             <Box sx={{ marginBottom: 2, fontWeight: 'bold', color: '#36454F' }}>Adress: <span style={{ fontWeight: 'normal' }}>{employee.address}</span></Box>
@@ -55,24 +41,8 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ employee }) => {
             <Box sx={{ marginBottom: 2, fontWeight: 'bold', color: '#36454F' }}>Number of Children: <span style={{ fontWeight: 'normal' }}>{employee.nbr_of_children}</span></Box>
           </Box>
         </DialogContent>
-        <DialogActions>
-            <Button onClick={handleUpdate} variant="outlined"
-                    color="primary"
-                    sx={{
-                      border: '2px solid',
-                      borderColor: (theme) => theme.palette.primary.main,
-                      color: (theme) => theme.palette.primary.main,
-                      '&:hover': {
-                        borderColor: (theme) => theme.palette.primary.dark,
-                        color: (theme) => theme.palette.primary.dark,
-                        backgroundColor: 'transparent',
-                      },
-                    }}>
-              Edit
-            </Button>
-        </DialogActions>
     </Box>
   );
 };
 
-export default EmployeeCard;
+export default ChiefDepCard;

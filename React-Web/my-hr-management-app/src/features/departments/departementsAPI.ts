@@ -3,7 +3,7 @@ import { Department } from '../../types/Department';
 
 
 const departmentsApi = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/departement/',
+  baseURL: 'http://127.0.0.1:8000/api/departement',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -21,10 +21,21 @@ departmentsApi.interceptors.request.use((config) => {
 export const fetchDepartments =  async (): Promise<Department[]> => {
   try {
     const response = await departmentsApi.get<Department[]>('/');
-    // console.log('Dept Api response: ', response.data);
+    console.log('Dept Api response: ', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching departments:', error);
+    throw error;
+  }
+};
+
+export const fetchDepartmentsWithEmps = async (): Promise<Department[]> => {
+  try {
+    const response = await departmentsApi.get<Department[]>('/list_department_employees/');
+    console.log('Dept Api response all: ', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching departments with employees:', error);
     throw error;
   }
 };
@@ -47,3 +58,4 @@ export const updateDepartment = async (id: number, departmentData: Partial<Depar
 export const deleteDepartment = async (id: number): Promise<void> => {
   await departmentsApi.delete(`/${id}/`);
 };
+

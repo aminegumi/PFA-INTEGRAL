@@ -21,6 +21,13 @@ export const fetchDepartments = createAsyncThunk(
   }
 );
 
+export const fetchDepartmentsWithEmps = createAsyncThunk(
+  'departments/fetchDepartmentsWithEmps',
+  async () => {
+    return await departmentsAPI.fetchDepartmentsWithEmps();
+  }
+);
+
 export const addDepartment = createAsyncThunk(
   'departments/addDepartment',
   async (department: Partial<Department>) => {
@@ -71,6 +78,16 @@ const departmentsSlice = createSlice({
       })
       .addCase(deleteDepartment.fulfilled, (state, action: PayloadAction<number>) => {
         state.departments = state.departments.filter(d => d.id !== action.payload);
+      }).addCase(fetchDepartmentsWithEmps.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchDepartmentsWithEmps.fulfilled, (state, action: PayloadAction<Department[]>) => {
+        state.status = 'succeeded';
+        state.departments = action.payload;
+      })
+      .addCase(fetchDepartmentsWithEmps.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Unknown error occurred';
       });
   },
 });

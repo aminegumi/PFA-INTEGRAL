@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -16,15 +15,24 @@ import {
   Switch,
   Button,
   TablePagination,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+  Select,
+  Avatar,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/system';
-import { fetchDepartments, deleteDepartment } from '../../../features/departments/departmentsSlice';
-import { AppDispatch, RootState } from '../../../app/store';
 import { Department } from '../../../types/Department';
 import AddIcon from '@mui/icons-material/Add';
-
+import BusinessIcon from '@mui/icons-material/Business';
+import EmployeeCard from '../../Employee/EmployeeCard';
+import { Employee } from '../../../types/Employee';
+import { fetchEmployeeById } from '../../../features/employees/employeesAPI';
+import ChiefDepCard from './ChiefDepCard';
 
 const SearchFilterContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(3),
@@ -81,11 +89,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-
 interface DepartmentTableProps {
-  filter(arg0: (department: any) => boolean): unknown;
   departmentData: Department[];
 }
+
 
 const DepartmentTable: React.FC<DepartmentTableProps> = ({ departmentData }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -94,6 +101,10 @@ const DepartmentTable: React.FC<DepartmentTableProps> = ({ departmentData }) => 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [assosiatedEmp, setAssosiatedEmp] = useState<Employee | null>(null)
+  
 
   const filteredDepartments = departmentData.filter(
     (department) =>
@@ -123,11 +134,30 @@ const DepartmentTable: React.FC<DepartmentTableProps> = ({ departmentData }) => 
     setOpenEditForm(true);
   };
 
+
+  const handleCellClick = async (department: Department) => {
+    if(department.responsable){
+      // Display the employee card if a chief is assigned
+      setSelectedDepartment(department);
+      setAssosiatedEmp(await fetchEmployeeById(department.responsable.id))
+      setOpenDialog(true);
+    }else{
+      setSelectedDepartment(department);
+      setOpenDialog(true);
+    }
+  }
+
+  const handleConfirmAssignChief = () => {
+    // Logic to assign here
+    console.log(`Assigned ${selectedEmployee} as chief of department ${selectedDepartment?.label}`);
+    setOpenDialog(false);
+  }
+
   return (
     <>
       <SearchFilterContainer>
         <TextField
-          label="Search Employees"
+          label="Search Departments"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -162,8 +192,11 @@ const DepartmentTable: React.FC<DepartmentTableProps> = ({ departmentData }) => 
         <Table stickyHeader>
           <TableHead>
             <TableRow>
+              <StyledTableCell></StyledTableCell>
               <StyledTableCell>ID</StyledTableCell>
               <StyledTableCell>Label</StyledTableCell>
+              <StyledTableCell>department chief</StyledTableCell>
+              <StyledTableCell>Numbre of employees</StyledTableCell>
               {showActions && (<StyledTableCell>Actions</StyledTableCell>)}
             </TableRow>
           </TableHead>
@@ -172,8 +205,20 @@ const DepartmentTable: React.FC<DepartmentTableProps> = ({ departmentData }) => 
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((department) => (
                 <TableRow key={department.id}>
+                  <StyledTableCell>
+                    <IconButton>
+                      <BusinessIcon style={{ color: '#36454F' }}/>
+                    </IconButton>
+                    
+                  </StyledTableCell>
                   <StyledTableCell>{department.id}</StyledTableCell>
                   <StyledTableCell>{department.label}</StyledTableCell>
+                  <StyledTableCell onClick={() => handleCellClick(department)}>
+                    {department.responsable
+                      ? `${department.responsable.firstname} ${department.responsable.lastname}`
+                      : 'No Chief Assigned'}
+                  </StyledTableCell>
+                  <StyledTableCell>{department.nbr_emps}</StyledTableCell>
                   {showActions && (
                     <StyledTableCell>
                       <IconButton
@@ -204,6 +249,61 @@ const DepartmentTable: React.FC<DepartmentTableProps> = ({ departmentData }) => 
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+       <DialogTitle 
+          justifyContent={'center'} 
+          sx={{
+            backgroundColor: 'rgba(255, 248, 243, 0.8)',
+            backdropFilter: 'blur(10px)',
+            padding: '16px', // Add some padding
+          }}
+        >
+          {selectedDepartment?.responsable ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+              <Avatar 
+                src={selectedDepartment.responsable.image} 
+                sx={{marginRight: 2}} 
+                alt={`${selectedDepartment.responsable.firstname} ${selectedDepartment.responsable.lastname}`}
+              /> 
+              <Box sx={{ fontWeight: 'bold' }}>
+                {selectedDepartment.responsable.firstname} {selectedDepartment.responsable.lastname}
+              </Box>
+            </Box>
+          ) : (
+            'Assign Chief'
+          )}
+        </DialogTitle>
+        <DialogContent sx={{backgroundColor: 'rgba(255, 248, 243, 0.8)',
+        backdropFilter: 'blur(10px)',}}>
+          {selectedDepartment?.responsable ? (
+            <ChiefDepCard employee={assosiatedEmp} />
+          ) : (
+            <>
+              <p>Do you want to assign a chief to this department?</p>
+              <Select
+                value={selectedDepartment?.employes}
+                onChange={(e) => setSelectedEmployee(e.target.value as unknown as Employee)}
+                fullWidth
+              >
+                {selectedDepartment?.employes.map((employee) => (
+                    <MenuItem key={employee.id} value={employee.id}>
+                      {employee.firstname} {employee.lastname}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions sx={{backgroundColor: 'rgba(255, 248, 243, 0.8)',backdropFilter: 'blur(10px)',}}>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          {!selectedDepartment?.responsable && (
+            <Button onClick={handleConfirmAssignChief} color="primary">
+              Confirm
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

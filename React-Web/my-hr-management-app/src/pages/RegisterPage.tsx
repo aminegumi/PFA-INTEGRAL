@@ -48,12 +48,14 @@ const RegisterPage: React.FC = () => {
       try {
         const response = await api.post('/api/register/', { username, email, password });
         setSuccess('Registration successful');
+        console.log('Registration successful', response.data);
         // Optionally, you can automatically log in the user here
         // by calling the login API and storing the token
         setTimeout(() => {
           navigate('/login');
         }, 2000);
       } catch (err) {
+        console.log('Registration successful', err);
         if (err.response) {
           setError(err.response.data.message || 'Registration failed');
         } else {

@@ -21,6 +21,7 @@ class CustomAuthToken(ObtainAuthToken):
         
         if email and password:
             user = authenticate(request, email=email, password=password)
+            print(user)
             if user:
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({

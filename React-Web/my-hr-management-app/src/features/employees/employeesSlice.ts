@@ -55,7 +55,10 @@ const employeesSlice = createSlice({
       })
       .addCase(fetchEmployees.fulfilled, (state, action: PayloadAction<Employee[]>) => {
         state.status = 'succeeded';
-        state.employees = action.payload;
+        state.employees = action.payload.map(employee => ({
+          ...employee,
+          departement: employee.departement || {id: -1, label: 'Unassigned'}
+        }));
       })
       .addCase(fetchEmployees.rejected, (state, action) => {
         state.status = 'failed';

@@ -9,9 +9,8 @@ import EmployeeTable from '../components/Employee/EmployeeTable';
 import DepartmentTable from '../components/DDB/Depatement/DepatementTable';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { fetchEmployees } from '../features/employees/employeesSlice';
-import { fetchDepartments } from '../features/departments/departmentsSlice';
 import AppNavbar from '../components/Navbar';
-
+import { fetchDepartmentsWithEmps } from '../features/departments/departmentsSlice';
 const DashboardContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
@@ -52,7 +51,7 @@ const Home: React.FC = () => {
         .catch(error => console.error('Error fetching employees:', error));
     }
     if (departmentStatus === 'idle') {
-      dispatch(fetchDepartments())
+      dispatch(fetchDepartmentsWithEmps())
         .then(() => console.log('Departments fetched:', departments))
         .catch(error => console.error('Error fetching departments:', error));
     }

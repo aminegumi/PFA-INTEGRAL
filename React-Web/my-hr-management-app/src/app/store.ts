@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+import departmentsReducer from '../features/departments/departmentsSlice';
 import employeesReducer from '../features/employees/employeesSlice';
-import departmentsSlice from '../features/departments/departmentsSlice';
 
 export const store = configureStore({
   reducer: {
+    departments: departmentsReducer,
     employees: employeesReducer,
-    departments: departmentsSlice,
     // Ajoutez d'autres reducers ici si nécessaire
   },
 });

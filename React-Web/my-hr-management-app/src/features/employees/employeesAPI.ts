@@ -22,7 +22,7 @@ employeesApi.interceptors.request.use((config) => {
 export const fetchEmployees = async (): Promise<Employee[]> => {
   try {
     const response = await employeesApi.get<Employee[]>('/');
-    // console.log('API Response:', response.data); // Log API response
+    console.log('API Response:', response.data); // Log API response
     return response.data;
   } catch (error) {
     console.error('Error fetching employees:', error);
